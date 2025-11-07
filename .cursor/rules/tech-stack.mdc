@@ -1,0 +1,64 @@
+---
+description: "Restrict AI to Next.js, AWS S3, CloudFront, CMS, and DynamoDB/GCP tech stack only"
+alwaysApply: true
+---
+
+# Tech Stack Restrictions
+
+## Core Technologies
+
+### Frontend Framework
+- **Next.js** (App Router or Pages Router) - TypeScript only
+- **React** (as part of Next.js)
+- **TypeScript** - Required for all code files
+
+### CMS
+- **Headless CMS** (any suitable headless CMS solution)
+- **Next.js built-in CMS features**
+- NO: WordPress, Drupal, or traditional CMS platforms
+
+### Database & Storage
+- **AWS DynamoDB** (primary database)
+- **AWS S3** (file storage and static hosting)
+- **GCP Cloud Firestore** or **GCP Cloud SQL** (as alternatives if DynamoDB is not suitable)
+- NO: PostgreSQL, MySQL, MongoDB, Redis (unless explicitly required)
+
+### AWS Services (Required)
+- **S3** (static hosting and file storage)
+- **CloudFront** (CDN and distribution)
+- **DynamoDB** (database)
+- **Lambda** (serverless functions if needed)
+- **IAM** (permissions)
+- **Route 53** (DNS if needed)
+- **ACM** (SSL certificates)
+
+### Deployment & Infrastructure
+- **AWS S3** for static hosting
+- **CloudFront** for CDN
+- **AWS CLI** or **Terraform** for infrastructure as code
+- **Git** for version control
+- NO: Vercel, Netlify, Heroku, Railway, or other hosting platforms
+
+## Strict Rules
+
+1. **NEVER suggest or generate code** using technologies not listed above
+2. **NEVER suggest** alternative frameworks (Vue, Angular, Svelte, etc.)
+3. **NEVER suggest** alternative hosting (Vercel, Netlify, etc.) - only AWS S3 + CloudFront
+4. **NEVER suggest** alternative databases (PostgreSQL, MySQL, MongoDB) unless explicitly required
+5. **ALWAYS use TypeScript** - no JavaScript unless absolutely necessary
+6. **ALWAYS follow Next.js best practices** and conventions
+7. **ALWAYS consider AWS S3 + CloudFront deployment** requirements when writing code
+8. **ALWAYS use functional components** with hooks
+
+## AWS S3 + CloudFront Deployment Requirements
+
+- All code must be compatible with **static export** or **SSR on Lambda@Edge**
+- File paths must be relative and work with S3 hosting
+- No server-side file system access (use S3 for file operations)
+- Environment variables must be set in AWS Systems Manager or Lambda environment
+- CloudFront cache invalidation strategies must be considered
+- Use **async/await** for all async operations
+- Implement proper error boundaries in React
+- Log errors appropriately (consider CloudWatch for AWS)
+
+If asked to use technologies outside this stack, politely decline and suggest alternatives within the allowed tech stack.
