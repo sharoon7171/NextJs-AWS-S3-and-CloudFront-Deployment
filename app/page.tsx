@@ -26,7 +26,7 @@ export default function Home() {
                   Learn More
                 </Link>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/sharoon7171/NextJs-AWS-S3-and-CloudFront-Deployment"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors shadow-lg border-2 border-white"
