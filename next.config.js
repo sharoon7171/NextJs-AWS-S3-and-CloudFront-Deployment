@@ -1,14 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Serverless Framework compatibility
-  output: 'standalone',
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
-  // Ensure images work with S3/CloudFront
+  // AWS Amplify configuration for serverless deployment
+  // AWS Amplify automatically handles the build output and deployment
   images: {
-    unoptimized: true,
+    unoptimized: true, // Required for S3/CloudFront deployment
   },
+  // Production optimizations
+  compress: true,
+  poweredByHeader: false,
 };
 
 module.exports = nextConfig;

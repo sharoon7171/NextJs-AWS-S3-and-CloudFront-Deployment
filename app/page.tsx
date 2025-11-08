@@ -1,6 +1,158 @@
+'use client';
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
+
+interface ServerlessInfo {
+  platform: string;
+  runtime: string;
+  region: string;
+  functionName: string;
+  functionVersion: string;
+  memoryLimit: string;
+  timestamp: string;
+  deployment: string;
+  architecture: string;
+  verified: boolean;
+  handler: string;
+  environmentVariables: {
+    AWS_EXECUTION_ENV: boolean;
+    AWS_REGION: boolean;
+    AWS_LAMBDA_FUNCTION_NAME: boolean;
+    AWS_LAMBDA_FUNCTION_MEMORY_SIZE: boolean;
+    LAMBDA_TASK_ROOT: boolean;
+  };
+}
+
+function ServerlessVerification() {
+  const [serverlessInfo, setServerlessInfo] = useState<ServerlessInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/serverless-info')
+      .then(res => res.json())
+      .then(data => {
+        setServerlessInfo(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to fetch serverless info');
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+        <p className="text-purple-100">Verifying serverless deployment...</p>
+      </div>
+    );
+  }
+
+  if (error || !serverlessInfo) {
+    return (
+      <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center">
+        <p className="text-red-200">Unable to verify serverless deployment</p>
+      </div>
+    );
+  }
+
+  const isVerified = serverlessInfo.verified;
+  const verificationStatus = isVerified ? '✅ REAL Lambda Detected' : '⚠️ Lambda NOT Detected';
+
+  return (
+    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 max-w-4xl mx-auto">
+      <div className="flex items-center justify-center mb-6">
+        <div className={`rounded-full p-3 mr-4 ${isVerified ? 'bg-green-500' : 'bg-yellow-500'}`}>
+          {isVerified ? (
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          )}
+        </div>
+        <div>
+          <h3 className="text-2xl font-bold text-white">{verificationStatus}</h3>
+          <p className="text-purple-100">
+            {isVerified 
+              ? 'This website is running on AWS Lambda (Verified)' 
+              : 'Running in development or Lambda environment not detected'}
+          </p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div className="bg-white/5 rounded-lg p-4">
+          <p className="text-purple-200 text-sm mb-1">Platform</p>
+          <p className="text-white font-semibold">{serverlessInfo.platform}</p>
+        </div>
+        <div className="bg-white/5 rounded-lg p-4">
+          <p className="text-purple-200 text-sm mb-1">Runtime</p>
+          <p className="text-white font-semibold">{serverlessInfo.runtime}</p>
+          {serverlessInfo.environmentVariables?.AWS_EXECUTION_ENV && (
+            <p className="text-green-300 text-xs mt-1">✓ Real Lambda env var</p>
+          )}
+        </div>
+        <div className="bg-white/5 rounded-lg p-4">
+          <p className="text-purple-200 text-sm mb-1">Region</p>
+          <p className="text-white font-semibold">{serverlessInfo.region}</p>
+          {serverlessInfo.environmentVariables?.AWS_REGION && (
+            <p className="text-green-300 text-xs mt-1">✓ Real Lambda env var</p>
+          )}
+        </div>
+        <div className="bg-white/5 rounded-lg p-4">
+          <p className="text-purple-200 text-sm mb-1">Memory Limit</p>
+          <p className="text-white font-semibold">{serverlessInfo.memoryLimit}</p>
+          {serverlessInfo.environmentVariables?.AWS_LAMBDA_FUNCTION_MEMORY_SIZE && (
+            <p className="text-green-300 text-xs mt-1">✓ Real Lambda env var</p>
+          )}
+        </div>
+        <div className="bg-white/5 rounded-lg p-4">
+          <p className="text-purple-200 text-sm mb-1">Deployment</p>
+          <p className="text-white font-semibold">{serverlessInfo.deployment}</p>
+        </div>
+        <div className="bg-white/5 rounded-lg p-4">
+          <p className="text-purple-200 text-sm mb-1">Architecture</p>
+          <p className="text-white font-semibold">{serverlessInfo.architecture}</p>
+        </div>
+      </div>
+
+      {serverlessInfo.environmentVariables && (
+        <div className="mt-6 bg-white/5 rounded-lg p-4">
+          <p className="text-purple-200 text-sm mb-2 font-semibold">Environment Variable Detection:</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+            {Object.entries(serverlessInfo.environmentVariables).map(([key, value]) => (
+              <div key={key} className="flex items-center">
+                <span className={value ? 'text-green-300' : 'text-red-300'}>
+                  {value ? '✓' : '✗'}
+                </span>
+                <span className="text-purple-100 ml-2">{key}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      <div className="mt-6 text-center">
+        <p className="text-purple-100 text-sm">
+          Last verified: {new Date(serverlessInfo.timestamp).toLocaleString()}
+        </p>
+        <p className="text-purple-200 text-xs mt-2">
+          {isVerified 
+            ? '✓ Verified: Running on real AWS Lambda' 
+            : '⚠️ Warning: Lambda environment not detected - may be running locally'}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -12,10 +164,10 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                Next.js on AWS Lambda
+                Next.js on AWS Amplify
               </h1>
               <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-                Professional Next.js 15 application deployed on AWS Lambda using Serverless Framework.
+                Professional Next.js 15 application deployed on AWS using Amplify.
                 Scalable, fast, and cost-effective serverless architecture.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -43,7 +195,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Why Choose AWS Lambda?
+                Why Choose AWS Amplify?
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Leverage the power of serverless architecture for your Next.js applications
@@ -87,14 +239,29 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Serverless Verification Section */}
+        <section className="py-20 bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Serverless Verification
+              </h2>
+              <p className="text-lg text-purple-100 max-w-2xl mx-auto">
+                Verify that this website is running on AWS Lambda serverless functions
+              </p>
+            </div>
+            <ServerlessVerification />
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-20 bg-blue-600 text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Ready to Deploy?
             </h2>
-            <p className="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
-              Get started with Next.js on AWS Lambda today. Check out our documentation and deployment guide.
+              <p className="text-xl mb-8 text-blue-100 max-w-2xl mx-auto">
+              Get started with Next.js on AWS Amplify today. Check out our documentation and deployment guide.
             </p>
             <Link
               href="/about"

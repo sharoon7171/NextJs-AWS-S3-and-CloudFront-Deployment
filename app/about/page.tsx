@@ -12,7 +12,7 @@ export default function About() {
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">About This Project</h1>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                A professional demonstration of Next.js 15 deployed on AWS Lambda using Serverless Framework
+                A professional demonstration of Next.js 15 deployed on AWS Lambda using AWS Amplify
               </p>
             </div>
           </div>
@@ -29,7 +29,7 @@ export default function About() {
                 automatically handle traffic spikes without manual intervention.
               </p>
               <p className="text-lg text-gray-600">
-                By leveraging AWS Lambda and the Serverless Framework, we can deploy Next.js applications 
+                By leveraging AWS Lambda and AWS Amplify, we can deploy Next.js applications 
                 that are both performant and economical, making it an ideal solution for startups and 
                 enterprises alike.
               </p>
@@ -53,9 +53,9 @@ export default function About() {
                 <p className="text-gray-500 text-sm mt-2">Serverless Compute</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md text-center">
-                <div className="text-4xl font-bold text-green-600 mb-2">Serverless</div>
-                <div className="text-sm text-gray-600">Framework</div>
-                <p className="text-gray-500 text-sm mt-2">Deployment Tool</p>
+                <div className="text-4xl font-bold text-green-600 mb-2">AWS</div>
+                <div className="text-sm text-gray-600">Amplify</div>
+                <p className="text-gray-500 text-sm mt-2">Deployment Platform</p>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md text-center">
                 <div className="text-4xl font-bold text-cyan-600 mb-2">TypeScript</div>

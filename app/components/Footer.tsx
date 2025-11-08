@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">NextJS AWS</h3>
             <p className="text-gray-400 text-sm">
-              Professional Next.js application deployed on AWS Lambda with Serverless Framework.
+              Professional Next.js application deployed on AWS Lambda with AWS Amplify.
             </p>
           </div>
           <div>
@@ -31,7 +31,7 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-400 text-sm">
               <li>Next.js 15</li>
               <li>AWS Lambda</li>
-              <li>Serverless Framework</li>
+              <li>AWS Amplify</li>
             </ul>
           </div>
         </div>
